@@ -1,25 +1,243 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
-    <title>Il Mio Sito Personale</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Una lettera per te</title>
     <style>
-        /* Qui aggiungerai il CSS per la bellezza */
-        body { font-family: sans-serif; text-align: center; background: #f0f0f0; }
-        h1 { color: #333; }
+        body {
+            background-color: #fce4ec;
+            /* Rosa chiarissimo */
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .letter {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: #fff;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            position: relative;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+
+
+        h1 {
+            color: #d81b60;
+            font-size: 1.7rem;
+        }
+
+        p {
+            color: #d81b60;
+            font-size: 1.7rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            padding: 10px 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
+            transition: transform 0.2s;
+            font-family: inherit;
+        }
+
+        #si {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #4caf50;
+            color: white;
+            position: relative;
+            bottom: 10px;
+            right: 10%;
+            z-index: 10;
+        }
+
+        #no {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #f44336;
+            color: white;
+            position: relative;
+            bottom: 10px;
+            left: 10%;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+
+        #messaggio-finale {
+            display: none;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #d81b60;
+        }
+
+        .heart {
+            position: fixed;
+            /* Meglio fixed per seguire il cursore ovunque */
+            pointer-events: none;
+            /* Fondamentale: il mouse "passa attraverso" i cuori */
+            z-index: 5;
+            color: #f40404;
+            /* Colore rosa acceso */
+            font-size: 15px;
+            /* Dimensione iniziale */
+            opacity: 0;
+            /* Inizialmente invisibili */
+            transform: scale(0);
+            /* Inizialmente piccoli */
+            pointer-events: none;
+            /* I cuori non bloccano il click sul bottone */
+            animation: floatUp 3s forwards;
+            /* Animazione di volo (dura 1 secondo) */
+            text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            /* Piccola ombra */
+        }
+
+        /* L'animazione di volo */
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0);
+                /* Partono dal bottone */
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+                /* Appaiono e si ingrandiscono */
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(var(--float-x), var(--float-y)) scale(1.2);
+                /* Volano via e svaniscono */
+            }
+        }
     </style>
 </head>
+
 <body>
 
-    <h1>Ciao, sono [Tuo Nome]!</h1>
-    <p>Benvenuti nel mio primo sito web creato in HTML.</p>
-    
-    <img src="https://via.placeholder.com/150" alt="Mia Foto">
+    <div class="letter">
+        <p id="testo-lettera">
+            Silvietta Silvietta...<br>
+            <strong>Would you like to be my Valentine?</strong>
+        </p>
 
-    <ul>
-        <li><a href="https://github.com">Il mio GitHub</a></li>
-        <li><a href="mailto:email@esempio.com">Contattami</a></li>
-    </ul>
+        <div class="buttons" id="area-bottoni">
+            <button id="si" onclick="risposta('SI')">YES</button>
+            <button id="no" onclick="risposta('NO')">NO</button>
+        </div>
+
+        <div id="messaggio-finale"></div>
+    </div>
+
+    <script>
+        function risposta(scelta) {
+            const areaBottoni = document.getElementById('area-bottoni');
+            const messaggio = document.getElementById('messaggio-finale');
+
+            areaBottoni.style.display = 'none'; // Nasconde i bottoni
+            messaggio.style.display = 'block'; // Mostra il messaggio
+
+            if (scelta === 'SI') {
+                messaggio.innerHTML = "yeeeeaaahhhh!";
+            } else {
+                messaggio.innerHTML = "Coooome?";
+            }
+        }
+        const bottoneNo = document.getElementById('no');
+
+        bottoneNo.addEventListener('mouseover', () => {
+            // Definiamo un raggio di "fuga" massimo (es. 150px in ogni direzione)
+            // Se lo mettiamo troppo alto, il tasto esce dalla lettera
+            const range = 150;
+
+            // Generiamo uno spostamento casuale tra -150 e +150
+            const randomX = Math.floor(Math.random() * (range * 2 + 1)) - range;
+            const randomY = Math.floor(Math.random() * (range * 2 + 1)) - range;
+
+            // Applichiamo lo spostamento relativo
+            bottoneNo.style.left = `${randomX}px`;
+            bottoneNo.style.top = `${randomY}px`;
+        });
+        const bottoneSi = document.getElementById('si');
+        let timerCuori = null; // Variabile per memorizzare il timer
+
+        // 1. Funzione che crea un singolo cuore (stessa di prima, migliorata)
+        function createHeart(x, y) {
+            const heart = document.createElement('span');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+
+            const floatX = (Math.random() - 0.5) * 500;
+            const floatY = (Math.random() - 1) * 400;
+
+            heart.style.setProperty('--float-x', `${floatX}px`);
+            heart.style.setProperty('--float-y', `${floatY}px`);
+
+            document.body.appendChild(heart);
+
+            heart.addEventListener('animationend', () => heart.remove());
+        }
+
+        // 2. Quando il mouse entra: INIZIA il flusso
+        bottoneSi.addEventListener('mouseenter', (e) => {
+            if (!timerCuori) {
+                timerCuori = setInterval(() => {
+                    // Crea 3 cuori ogni 50 millisecondi per un effetto "fitto"
+                    for (let i = 0; i < 5; i++) {
+                        // Otteniamo la posizione del tasto per farli uscire da lì
+                        const rect = bottoneSi.getBoundingClientRect();
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
+                        createHeart(centerX, centerY);
+                    }
+                }, 50);
+            }
+        });
+
+        // 3. Quando il mouse esce: FERMA il flusso (opzionale, se vuoi che smettano)
+        bottoneSi.addEventListener('mouseleave', () => {
+            clearInterval(timerCuori);
+            timerCuori = null;
+        });
+
+        // 4. Quando clicchi: FERMA tutto definitivamente
+        bottoneSi.addEventListener('click', () => {
+            clearInterval(timerCuori);
+            timerCuori = null;
+            risposta('SI');
+        });
+
+
+
+
+
+    </script>
 
 </body>
+
 </html>
